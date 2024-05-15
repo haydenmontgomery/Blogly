@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}List{% endblock %}
+{% block content %}
+
+<h1>Create a user</h1>
+<form action="/users/new" method="POST">
+  <div class="mb-3">
+    <label for="firstName" class="form-label">First Name</label>
+    <input type="text" class="form-control w-50" name="firstName" id="firstName" placeholder="Enter your first name">
+  </div>
+  <div class="mb-3">
+    <label for="LastName" class="form-label">Last Name</label>
+    <input type="text" class="form-control w-50" name="lastName" id="lastName" placeholder="Enter your last name">
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="imageURL">Image URL</label>
+    <input type="text" class="form-control w-50" name="imageURL" id="imageURL" placeholder="Provide an image of this user">
+  </div>
+  <div class="d-md-flex justify-content-md-center">
+    <button class="btn btn-success"><a href="" class="link-light link-underline-opacity-0">Add</a></button>
+  </div>  
+</form>
+{% endblock %}
