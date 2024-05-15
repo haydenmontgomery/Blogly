@@ -1,9 +1,11 @@
 """Seed file to make sample data for Users db."""
 
-from models import User, db
-from app import app
+from models import User, db, connect_db
+from app import create_app
 
 # Create all tables
+app = create_app("blogly", testing=False)
+connect_db(app)
 db.drop_all()
 db.create_all()
 

@@ -26,6 +26,10 @@ class User(db.Model):
                         nullable=True,
                         unique=True)
     
+
     def __repr__(self):
         u = self
         return f"<User id={u.id} first name={u.first_name} last name={u.last_name} profile pic={u.image_url}>"
+    
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}"
