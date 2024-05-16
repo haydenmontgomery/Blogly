@@ -15,8 +15,9 @@ def create_app(database_name, testing=False):
         app.config["WTF_CSRF_ENABLED"] = False
 
     debug = DebugToolbarExtension(app)
-
+    app.app_context().push()
     connect_db(app)
+
     #db.create_all()
 
     @app.route('/')
@@ -80,6 +81,9 @@ def create_app(database_name, testing=False):
             db.session.commit()
             return redirect('/users')
         return redirect('/users')
+    
+    return app
+    
 if __name__=='__main__':
     app = create_app('blogly')
     connect_db(app)
