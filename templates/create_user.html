@@ -3,7 +3,7 @@
 {% block content %}
 
 <h1>Create a user</h1>
-<form action="/users/new" method="POST">
+<form method="POST">
   <div class="mb-3">
     <label for="firstName" class="form-label">First Name</label>
     <input type="text" class="form-control w-50" name="firstName" id="firstName" placeholder="Enter your first name">
@@ -17,7 +17,7 @@
     <input type="text" class="form-control w-50" name="imageURL" id="imageURL" placeholder="Provide an image of this user">
   </div>
   <div class="d-md-flex justify-content-md-center">
-    <button class="btn btn-success"><a href="" class="link-light link-underline-opacity-0">Add</a></button>
+    <button type="submit" class="btn btn-success">Add</button>
   </div>  
 </form>
 {% endblock %}

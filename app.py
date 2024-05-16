@@ -17,8 +17,7 @@ def create_app(database_name, testing=False):
     debug = DebugToolbarExtension(app)
     app.app_context().push()
     connect_db(app)
-
-    #db.create_all()
+    db.create_all()
 
     @app.route('/')
     def to_list():
@@ -35,24 +34,23 @@ def create_app(database_name, testing=False):
         user = User.query.get_or_404(user_id)
         return render_template('user_profile.html', user=user)
 
-    @app.route('/users/new')
+    @app.route('/users/new', methods=["GET"])
     def new_user():
         return render_template('create_user.html')
 
     @app.route('/users/new', methods=["POST"])
     def create_user():
-        first_name = request.form["firstName"]
-        last_name = request.form["lastName"]
-        image_url = request.form["imageURL"]
+        new_user = User(
+        first_name=request.form['firstName'],
+        last_name=request.form['lastName'],
+        image_url=request.form['imageURL'] or None)
+            
+        db.session.add(new_user)
+        db.session.commit()
 
-        new_user = User(first_name=first_name, last_name=last_name, image_url=image_url)
-        if new_user:
-            db.session.add(new_user)
-            db.session.commit()
-            return redirect(f'/users/{new_user.id}')
         return redirect('/users')
 
-    @app.route('/users/<int:user_id>/edit')
+    @app.route('/users/<int:user_id>/edit', methods=["GET"])
     def edit_user(user_id):
         user = User.query.get_or_404(user_id)
         return render_template('edit_user.html', user=user)
@@ -63,28 +61,25 @@ def create_app(database_name, testing=False):
         """     if request.form["firstName"] != 1 or request.form["lastName"] != 1 or request.form["imageURL"] != 1:
             return redirect(f'/{user_id}')
         else: """
-        if edited_user:
-            edited_user.first_name = request.form["firstName"]
-            edited_user.last_name = request.form["lastName"]
-            edited_user.image_url = request.form["imageURL"]
+        edited_user.first_name = request.form["firstName"]
+        edited_user.last_name = request.form["lastName"]
+        edited_user.image_url = request.form["imageURL"]
 
         
         db.session.add(edited_user)
         db.session.commit()
-        return redirect(f'/users/{edited_user.id}')
+        return redirect('/users')
 
     @app.route('/users/<int:user_id>/delete', methods=["POST"])
     def delete_user(user_id):
         user_to_delete = User.query.get_or_404(user_id)
-        if user_to_delete:
-            db.session.delete(user_to_delete)
-            db.session.commit()
-            return redirect('/users')
+        db.session.delete(user_to_delete)
+        db.session.commit()
         return redirect('/users')
     
     return app
     
 if __name__=='__main__':
     app = create_app('blogly')
-    connect_db(app)
+    #connect_db(app)
     app.run(debug=True)

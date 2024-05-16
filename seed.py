@@ -5,7 +5,7 @@ from app import create_app
 
 # Create all tables
 app = create_app("blogly", testing=False)
-connect_db(app)
+#connect_db(app)
 db.drop_all()
 db.create_all()
 

@@ -6,7 +6,7 @@
 <br>
 <div class="clearfix">
     <img src="{{user.image_url}}" class="fluid rounded col-md-6 float-md-start mb-3 ms-md-3">
-    <p class="fs-1 mb-4">{{user.get_full_name()}}</p>
+    <p class="fs-1 mb-4">{{user.full_name}}</p>
     <div class="clearfix">
         <button type="button" class="btn btn-primary"><a href="/users/{{user.id}}/edit" class="link-light link-underline-opacity-0">Edit</a></button>
         <form action="/users/{{user.id}}/delete" method="POST">

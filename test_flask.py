@@ -3,7 +3,7 @@ from unittest import TestCase
 from app import create_app
 from models import connect_db, db, User
 app = create_app('test_blogly', testing=True)
-connect_db(app)
+#connect_db(app)
 app.app_context().push()
 # Use test database and don't clutter tests with SQL
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///test_blogly'
