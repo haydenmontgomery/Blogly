@@ -27,13 +27,18 @@ class PetViewsTestCase(TestCase):
         """Add sample pet."""
 
         User.query.delete()
-
+        Post.query.delete()
         user = User(first_name="TestFirstName", last_name="TestLastName", image_url="TestURL")
         db.session.add(user)
+        db.session.commit()
+        post = Post(title="Test", content="Test content", user_id=user.id)
+        db.session.add(post)
         db.session.commit()
 
         self.user_id = user.id
         self.user = user
+        self.post_id = post.id
+        self.post = post
 
     def tearDown(self):
         """Clean up any fouled transaction."""
@@ -55,6 +60,7 @@ class PetViewsTestCase(TestCase):
 
             self.assertEqual(resp.status_code, 200)
             self.assertIn('TestFirstName TestLastName', html)
+            self.assertIn('Test', html)
 
     def test_add_user(self):
         with app.test_client() as client:
@@ -71,3 +77,21 @@ class PetViewsTestCase(TestCase):
             html = resp.get_data(as_text=True)
             self.assertEqual(resp.status_code, 200)
             self.assertNotEqual('TestFirstName', html)
+
+    def test_show_post(self):
+        with app.test_client() as client:
+            resp = client.get(f"/posts/{self.post_id}")
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('TestFirstName TestLastName', html)
+            self.assertIn('Test content', html)
+
+    def test_add_post(self):
+        with app.test_client() as client:
+            d = {"title": "Test2", "postContent": "Test content2"}
+            resp = client.post(f"/users/{self.user_id}/posts/new", data=d, follow_redirects=True)
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn("Test2", html)        

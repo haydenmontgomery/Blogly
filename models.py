@@ -62,6 +62,6 @@ class Post(db.Model):
                            nullable=False,
                            default='2024-01-01 12:00:00')
     
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
     
-    user = db.relationship('User', backref='posts')
+    user = db.relationship('User', backref=db.backref('posts', passive_deletes=True))
