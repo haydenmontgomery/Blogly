@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from app import create_app
-from models import connect_db, db, User
+from models import connect_db, db, User, Post
 app = create_app('test_blogly', testing=True)
 #connect_db(app)
 app.app_context().push()

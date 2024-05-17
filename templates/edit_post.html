@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}List{% endblock %}
+{% block content %}
+
+<h1>Edit Post</h1>
+<form method="POST">
+  <div class="mb-3">
+    <label for="title" class="form-label">Title</label>
+    <input type="text" class="form-control w-50" name="title" value="{{post.title}}">
+  </div>
+  <div class="mb-3">
+    <label for="postContent" class="form-label">Post Content</label>
+    <input type="text" class="form-control w-50" name="postContent" value="{{post.content}}">
+  </div>
+  <div class="d-md-flex justify-content-md-center">
+    <a href="/posts/{{post.id}}" class="btn btn-outline-info">Cancel</a>
+    <button type="submit" class="btn btn-success">Save</button>
+  </div>  
+</form>
+{% endblock %}

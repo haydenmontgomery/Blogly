@@ -1,7 +1,8 @@
 """Blogly application."""
 from flask import Flask, request, render_template, redirect, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User
+from models import db, connect_db, User, Post
+from time import gmtime, strftime
 
 def create_app(database_name, testing=False):
     app = Flask(__name__)
@@ -32,7 +33,8 @@ def create_app(database_name, testing=False):
     @app.route('/users/<int:user_id>')
     def user_profile(user_id):
         user = User.query.get_or_404(user_id)
-        return render_template('user_profile.html', user=user)
+        posts = Post.query.filter_by(user_id=user_id)
+        return render_template('user_profile.html', user=user, posts=posts)
 
     @app.route('/users/new', methods=["GET"])
     def new_user():
@@ -56,7 +58,7 @@ def create_app(database_name, testing=False):
         return render_template('edit_user.html', user=user)
 
     @app.route('/users/<int:user_id>/edit', methods=["POST"])
-    def edit_user_post(user_id):
+    def edit_user_edit(user_id):
         edited_user = User.query.get_or_404(user_id)
         """     if request.form["firstName"] != 1 or request.form["lastName"] != 1 or request.form["imageURL"] != 1:
             return redirect(f'/{user_id}')
@@ -77,6 +79,50 @@ def create_app(database_name, testing=False):
         db.session.commit()
         return redirect('/users')
     
+    @app.route('/posts/<int:post_id>')
+    def show_post(post_id):
+        post = Post.query.get_or_404(post_id)
+        user = User.query.get_or_404(post.user_id)
+        return render_template('show_post.html', post=post, user=user)
+    
+    @app.route('/posts/<int:post_id>/edit', methods=["GET"])
+    def edit_post_form(post_id):
+        post = Post.query.get_or_404(post_id)
+        return render_template('edit_post.html', post=post)
+
+    @app.route('/posts/<int:post_id>/edit', methods=["POST"])
+    def edit_post_edit(post_id):
+        post = Post.query.get_or_404(post_id)
+
+        post.title = request.form["title"]
+        post.content = request.form["postContent"]
+        db.session.add(post)
+        db.session.commit()
+        return redirect(f'/posts/{post.id}')
+    
+    @app.route('/users/<int:user_id>/posts/new', methods=["GET"])
+    def new_post_form(user_id):
+        user = User.query.get_or_404(user_id)
+        return render_template('new_post.html', user=user)
+
+    @app.route('/users/<int:user_id>/posts/new', methods=["POST"])
+    def new_post_post(user_id):
+        new_post = Post(
+        title=request.form['title'],
+        content=request.form['postContent'],
+        created_at = strftime("%Y-%m-%d %H:%M:%S", gmtime()),
+        user_id = user_id)
+        db.session.add(new_post)
+        db.session.commit()
+        return redirect(f'/posts/{new_post.id}')
+    
+    @app.route('/posts/<int:post_id>/delete', methods=["POST"])
+    def delete_post(post_id):
+        post = Post.query.get_or_404(post_id)
+        db.session.delete(post)
+        db.session.commit()
+        return redirect('/users')
+
     return app
     
 if __name__=='__main__':

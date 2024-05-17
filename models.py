@@ -42,3 +42,26 @@ class User(db.Model):
     @property
     def full_name(self):
         return f"{self.first_name} {self.last_name}"
+    
+class Post(db.Model):
+    __tablename__ = 'posts'
+
+    id = db.Column(db.Integer,
+                   primary_key=True,
+                   autoincrement=True)
+    
+    title = db.Column(db.Text,
+                      nullable=False,
+                      default= "No Title Given")
+    
+    content = db.Column(db.Text,
+                        nullable=False,
+                        default = "No Content Given")
+    
+    created_at = db.Column(db.Text,
+                           nullable=False,
+                           default='2024-01-01 12:00:00')
+    
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    
+    user = db.relationship('User', backref='posts')
