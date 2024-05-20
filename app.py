@@ -1,7 +1,7 @@
 """Blogly application."""
 from flask import Flask, request, render_template, redirect, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User, Post
+from models import db, connect_db, User, Post, Tag, PostTag
 from time import gmtime, strftime
 
 def create_app(database_name, testing=False):
@@ -22,7 +22,12 @@ def create_app(database_name, testing=False):
 
     @app.route('/')
     def to_list():
-        return redirect('/users')
+        posts = Post.query.all()
+        reversed_posts = posts[::-1][:5]
+        user_list = []
+        for post in reversed_posts:
+            user_list.append(User.query.get_or_404(post.user_id))
+        return render_template('home.html', posts=reversed_posts, user_list=user_list)
 
     @app.route('/users')
     def list_users():
@@ -103,15 +108,19 @@ def create_app(database_name, testing=False):
     @app.route('/users/<int:user_id>/posts/new', methods=["GET"])
     def new_post_form(user_id):
         user = User.query.get_or_404(user_id)
-        return render_template('new_post.html', user=user)
+        tags = Tag.query.all()
+        return render_template('new_post.html', user=user, tags=tags)
 
     @app.route('/users/<int:user_id>/posts/new', methods=["POST"])
     def new_post_post(user_id):
+        tag_ids = [int(num) for num in request.form.getlist("tags")]
+        tags = Tag.query.filter(Tag.id.in_(tag_ids)).all()
         new_post = Post(
         title=request.form['title'],
         content=request.form['postContent'],
         created_at = strftime("%Y-%m-%d %H:%M:%S", gmtime()),
-        user_id = user_id)
+        user_id = user_id,
+        tags=tags)
         db.session.add(new_post)
         db.session.commit()
         return redirect(f'/posts/{new_post.id}')
@@ -119,9 +128,54 @@ def create_app(database_name, testing=False):
     @app.route('/posts/<int:post_id>/delete', methods=["POST"])
     def delete_post(post_id):
         post = Post.query.get_or_404(post_id)
+        user = User.query.get_or_404(post.user_id)
         db.session.delete(post)
         db.session.commit()
-        return redirect('/users')
+        return redirect(f'/users/{user.id}')
+    
+    @app.route('/tags', methods=["GET"])
+    def list_tags():
+        tags = Tag.query.all()
+        return render_template('list_tags.html', tags=tags)
+    
+    @app.route('/tags/<int:tag_id>', methods=["GET"])
+    def show_tag(tag_id):
+        tag = Tag.query.get_or_404(tag_id)
+        return render_template('show_tag.html', tag=tag)
+
+    @app.route('/tags/new', methods=["GET"])
+    def new_tag():
+        return render_template('create_tag.html')
+    
+    @app.route('/tags/new', methods=["POST"])
+    def new_tag_post():
+        new_tag = Tag(name=request.form["tagName"])
+        db.session.add(new_tag)
+        db.session.commit()
+
+        return redirect(f'/tags/{new_tag.id}')
+    
+    @app.route('/tags/<int:tag_id>/edit', methods=["GET"])
+    def edit_tag(tag_id):
+        tag = Tag.query.get_or_404(tag_id)
+        return render_template('edit_tag.html', tag=tag)
+    
+    @app.route('/tags/<int:tag_id>/edit', methods=["POST"])
+    def edit_tag_post(tag_id):
+        tag = Tag.query.get_or_404(tag_id)
+        tag.name = request.form["tagName"]
+        db.session.add(tag)
+        db.session.commit()
+        return redirect(f'/tags/{tag.id}')
+        
+    
+    @app.route('/tags/<int:tag_id>/delete', methods=["POST"])
+    def delete_tag(tag_id):
+        tag = Tag.query.get_or_404(tag_id)
+        db.session.delete(tag)
+        db.session.commit()
+        return redirect('/tags')
+
 
     return app
     

@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
-{% block title %}List{% endblock %}
+{% block title %}New Post{% endblock %}
 {% block content %}
 
-<h1>Add a post for {{user.full_name}}</h1>
+<h1>Add Post for {{user.full_name}}</h1>
 <form method="POST">
     <div class="mb-3">
       <label for="title" class="form-label">Title</label>
@@ -12,6 +12,12 @@
       <label for="postContent" class="form-label">Post Content</label>
       <input type="text" class="form-control w-50" name="postContent" placeholder="Enter post content">
     </div>
+      {% for tag in tags %}
+      <div class="form-check">
+      <input type="checkbox" class="form-check-input" value ="{{tag.id}}" name="tags" id="tag_{{tag.id}}">
+      <label for="tag_{{tag.id}}"" class="form-check-label">{{tag.name}}</label>
+    </div>
+      {% endfor %}
     <div class="d-md-flex justify-content-md-center">
       <a href="/users/{{user.id}}" class="btn btn-outline-info">Cancel</a>
       <button type="submit" class="btn btn-success">Add</button>

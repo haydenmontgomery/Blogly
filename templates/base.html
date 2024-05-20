@@ -9,13 +9,17 @@
 
 </head>
 <body>
-    <nav class="navbar">
-        <a href="/">Home</a>
-        </nav>
-        <br>
-        <main id="content">
-            {% block content %} {% endblock %}
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="navbar-nav">
+            <a class="btn btn-primary" href="/">Home</a>
+            <a class="btn btn-primary" href="/users">Users</a>
+            <a class="btn btn-primary" href="/tags">Tags</a>
+        </div>
+    </nav>
+    <br>
+    <main id="content">
+        {% block content %} {% endblock %}
 
-        </main>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>

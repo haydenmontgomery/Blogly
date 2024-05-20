@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from app import create_app
-from models import connect_db, db, User, Post
+from models import connect_db, db, User, Post, Tag, PostTag
 app = create_app('test_blogly', testing=True)
 #connect_db(app)
 app.app_context().push()
@@ -31,7 +31,7 @@ class PetViewsTestCase(TestCase):
         user = User(first_name="TestFirstName", last_name="TestLastName", image_url="TestURL")
         db.session.add(user)
         db.session.commit()
-        post = Post(title="Test", content="Test content", user_id=user.id)
+        post = Post(title="Test Title", content="Test content", user_id=user.id)
         db.session.add(post)
         db.session.commit()
 
@@ -60,7 +60,7 @@ class PetViewsTestCase(TestCase):
 
             self.assertEqual(resp.status_code, 200)
             self.assertIn('TestFirstName TestLastName', html)
-            self.assertIn('Test', html)
+            self.assertIn('Test Title', html)
 
     def test_add_user(self):
         with app.test_client() as client:
@@ -94,4 +94,11 @@ class PetViewsTestCase(TestCase):
             html = resp.get_data(as_text=True)
 
             self.assertEqual(resp.status_code, 200)
-            self.assertIn("Test2", html)        
+            self.assertIn("Test2", html)
+
+    def test_delete_post(self):
+        with app.test_client() as client:
+            resp = client.post(f"/posts/{self.post_id}/delete", follow_redirects=True)
+            html = resp.get_data(as_text=True)
+            self.assertEqual(resp.status_code, 200)
+            self.assertNotEqual('Test Title', html)

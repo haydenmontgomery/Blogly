@@ -1,6 +1,6 @@
 """Seed file to make sample data for Users db."""
 
-from models import User, Post, db, connect_db
+from models import User, Post, db, connect_db, Tag, PostTag
 from app import create_app
 
 # Create all tables
@@ -12,6 +12,8 @@ db.create_all()
 # If table isn't empty, empty it
 User.query.delete()
 Post.query.delete()
+Tag.query.delete()
+PostTag.query.delete()
 
 # Add Users
 alan = User(first_name='Alan', last_name='Alda', image_url='https://image.tmdb.org/t/p/original/jUuUbPuMGonFT5E2pcs4alfqaCN.jpg')
@@ -26,8 +28,44 @@ p4 = Post(title="Second Post!", content="Hey everyone! Just making a second post
 p5 = Post(title="Happy New Year!", content="Make some great resolutions!", created_at="2024-01-01 00:01:03", user_id=2)
 p6 = Post(title="Joined a gym", content="Let's go!!", created_at="2024-01-03 14:20:22", user_id=3)
 
+# Add tags
+t1 = Tag(name="post")
+t2 = Tag(name="celebrate")
+t3 = Tag(name="thoughts")
+t4 = Tag(name="happy")
+t5 = Tag(name="holiday")
+t6 = Tag(name="fun")
+
+
 db.session.add_all([alan,joel,jane])
 db.session.commit()
 db.session.add_all([p1,p2,p3,p4,p5,p6])
 # Commit--otherwise, this never gets saved!
+db.session.commit()
+
+db.session.add_all([t1,t2,t3,t4,t5,t6])
+db.session.commit()
+# Link our posts and tags
+
+pt1 = PostTag(post_id=p1.id, tag_id=t1.id)
+pt2 = PostTag(post_id=p2.id, tag_id=t1.id)
+pt3 = PostTag(post_id=p3.id, tag_id=t1.id)
+pt4 = PostTag(post_id=p4.id, tag_id=t1.id)
+pt5 = PostTag(post_id=p5.id, tag_id=t1.id)
+pt6 = PostTag(post_id=p6.id, tag_id=t1.id)
+pt7 = PostTag(post_id=p2.id, tag_id=t2.id)
+pt8 = PostTag(post_id=p2.id, tag_id=t3.id)
+pt9 = PostTag(post_id=p3.id, tag_id=t3.id)
+pt10 = PostTag(post_id=p3.id, tag_id=t6.id)
+pt11 = PostTag(post_id=p4.id, tag_id=t2.id)
+pt12 = PostTag(post_id=p5.id, tag_id=t2.id)
+pt13 = PostTag(post_id=p5.id, tag_id=t4.id)
+pt14 = PostTag(post_id=p5.id, tag_id=t5.id)
+pt15 = PostTag(post_id=p5.id, tag_id=t6.id)
+pt16 = PostTag(post_id=p6.id, tag_id=t2.id)
+pt17 = PostTag(post_id=p6.id, tag_id=t3.id)
+pt18 = PostTag(post_id=p6.id, tag_id=t4.id)
+pt19 = PostTag(post_id=p6.id, tag_id=t6.id)
+
+db.session.add_all([pt1,pt2,pt3,pt4,pt5,pt6,pt7,pt8,pt9,pt10,pt11,pt12,pt13,pt14,pt15,pt16,pt17,pt18,pt19])
 db.session.commit()

@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<h1>Blogly Recent Posts</h1>
+{% for i in range(posts | length) %}
+<h3>{{posts[i].title}}</h3>
+<p class="fs-3">{{posts[i].content}}</p>
+<p class="fs-5">By <a href="/users/{{posts[i].user_id}}">{{user_list[i].full_name}}</a> on {{posts[i].created_at}}</p>
+{% endfor %}
+{% endblock %}
