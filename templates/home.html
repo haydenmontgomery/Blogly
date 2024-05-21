@@ -7,5 +7,14 @@
 <h3>{{posts[i].title}}</h3>
 <p class="fs-3">{{posts[i].content}}</p>
 <p class="fs-5">By <a href="/users/{{posts[i].user_id}}">{{user_list[i].full_name}}</a> on {{posts[i].created_at}}</p>
+    {% if posts[i].tags %}
+        <div class="container-fluid">
+        <p class="fs-6 fw-bold">Tags:</p>
+        {% for tag in posts[i].tags %}
+            <a href="/tags/{{tag.id}}" class="btn btn-primary btn-sm">{{tag.name}}</a>
+        {% endfor %}
+        </div>
+    {% endif %}   
 {% endfor %}
+
 {% endblock %}

@@ -23,6 +23,7 @@ def create_app(database_name, testing=False):
     @app.route('/')
     def to_list():
         posts = Post.query.all()
+        #tags = Tag.query.all()
         reversed_posts = posts[::-1][:5]
         user_list = []
         for post in reversed_posts:
@@ -93,14 +94,17 @@ def create_app(database_name, testing=False):
     @app.route('/posts/<int:post_id>/edit', methods=["GET"])
     def edit_post_form(post_id):
         post = Post.query.get_or_404(post_id)
-        return render_template('edit_post.html', post=post)
+        tags = Tag.query.all()
+        return render_template('edit_post.html', post=post, tags=tags)
 
     @app.route('/posts/<int:post_id>/edit', methods=["POST"])
     def edit_post_edit(post_id):
         post = Post.query.get_or_404(post_id)
-
+        tag_ids = [int(num) for num in request.form.getlist("tags")]
+        tags = Tag.query.filter(Tag.id.in_(tag_ids)).all()
         post.title = request.form["title"]
         post.content = request.form["postContent"]
+        post.tags=tags
         db.session.add(post)
         db.session.commit()
         return redirect(f'/posts/{post.id}')
